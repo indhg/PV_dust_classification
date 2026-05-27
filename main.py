@@ -17,6 +17,7 @@ def main():
     epochs = 20
     lr = 0.001
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    model_name = 'model'          # ← 新增：模型标识，用于图表文件命名
     print(f"使用设备: {device}")
 
     # 1. 加载数据
@@ -30,18 +31,18 @@ def main():
     print("构建模型...")
     model = build_model(num_classes=3)
 
-    # 3. 训练模型
+    # 3. 训练模型（传入 model_name）
     print("开始训练...")
-    history = train(model, train_loader, val_loader, epochs=epochs, lr=lr, device=device)
+    history = train(model, train_loader, val_loader, epochs=epochs, lr=lr, device=device, model_name=model_name)
 
-    # 4. 评估模型
+    # 4. 评估模型（传入 model_name）
     print("在测试集上评估模型...")
-    metrics = evaluate(model, test_loader, device=device)
+    metrics = evaluate(model, test_loader, device=device, model_name=model_name)
 
     # 5. 保存模型权重
     save_dir = 'checkpoints'
     os.makedirs(save_dir, exist_ok=True)
-    save_path = os.path.join(save_dir, 'best_model.pth')
+    save_path = os.path.join(save_dir, f'{model_name}.pth')   # 用变量命名
     torch.save(model.state_dict(), save_path)
     print(f"模型已保存至 {save_path}")
 
